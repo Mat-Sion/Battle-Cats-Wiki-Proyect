@@ -1,0 +1,47 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}Effects - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Effects</h1>
+        <a href="{% url 'catspedia:effect-create' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Add New Effect
+        </a>
+    </div>
+
+    <div class="row">
+        {% for effect in effects %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-{{ effect.effect_type|lower }}">
+                    <h5 class="card-title mb-0 text-white">{{ effect.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-muted">{{ effect.get_effect_type_display }}</h6>
+                    <p class="card-text">{{ effect.description|truncatewords:30 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge bg-primary">Power: {{ effect.base_power }}x</span>
+                            <span class="badge bg-info">Duration: {{ effect.duration }}f</span>
+                            <span class="badge bg-warning">Proc: {{ effect.proc_chance }}%</span>
+                            {% if effect.area_of_effect %}
+                            <span class="badge bg-success">Area Effect</span>
+                            {% endif %}
+                        </div>
+                        <a href="{% url 'catspedia:effect-detail' effect.pk %}" class="btn btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No effects available. <a href="{% url 'catspedia:effect-create' %}" class="alert-link">Create one</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

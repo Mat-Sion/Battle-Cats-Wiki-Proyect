@@ -1,0 +1,121 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}{% if object %}Edit {{ object.name }}{% else %}New Buff{% endif %} - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        {% if object %}Edit {{ object.name }}{% else %}Create New Buff{% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="{{ form.name.id_for_label }}" class="form-label">Buff Name</label>
+                                    {{ form.name }}
+                                    {% if form.name.help_text %}
+                                        <div class="form-text">{{ form.name.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.name.errors %}
+                                        <div class="alert alert-danger">{{ form.name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.attack.id_for_label }}" class="form-label">Attack Power</label>
+                                    <div class="input-group">
+                                        {{ form.attack }}
+                                        <span class="input-group-text">
+                                            <i class="fas fa-fist-raised"></i>
+                                        </span>
+                                    </div>
+                                    {% if form.attack.help_text %}
+                                        <div class="form-text">{{ form.attack.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.attack.errors %}
+                                        <div class="alert alert-danger">{{ form.attack.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.duration.id_for_label }}" class="form-label">Duration</label>
+                                    <div class="input-group">
+                                        {{ form.duration }}
+                                        <span class="input-group-text">seconds</span>
+                                    </div>
+                                    {% if form.duration.help_text %}
+                                        <div class="form-text">{{ form.duration.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.duration.errors %}
+                                        <div class="alert alert-danger">{{ form.duration.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="{{ form.description_buff.id_for_label }}" class="form-label">Description</label>
+                                    {{ form.description_buff }}
+                                    {% if form.description_buff.help_text %}
+                                        <div class="form-text">{{ form.description_buff.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.description_buff.errors %}
+                                        <div class="alert alert-danger">{{ form.description_buff.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="btn-group w-100">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i>
+                                {% if object %}Update{% else %}Create{% endif %} Buff
+                            </button>
+                            <a href="{% url 'buff-list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Form validation
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
+{% endblock %}

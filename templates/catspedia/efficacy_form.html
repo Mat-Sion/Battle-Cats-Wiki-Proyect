@@ -1,0 +1,149 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}{% if object %}Edit {{ object.name_color }}{% else %}New Efficacy{% endif %} - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-balance-scale me-2"></i>
+                        {% if object %}Edit Efficacy{% else %}Create New Efficacy{% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.buff.id_for_label }}" class="form-label">
+                                        <i class="fas fa-plus-circle text-success me-1"></i>Buff
+                                    </label>
+                                    {{ form.buff }}
+                                    {% if form.buff.help_text %}
+                                        <div class="form-text">{{ form.buff.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.buff.errors %}
+                                        <div class="alert alert-danger">{{ form.buff.errors }}</div>
+                                    {% endif %}
+                                    <div id="buffDetails" class="mt-2"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.debuff.id_for_label }}" class="form-label">
+                                        <i class="fas fa-minus-circle text-danger me-1"></i>Debuff
+                                    </label>
+                                    {{ form.debuff }}
+                                    {% if form.debuff.help_text %}
+                                        <div class="form-text">{{ form.debuff.help_text }}</div>
+                                    {% endif %}
+                                    {% if form.debuff.errors %}
+                                        <div class="alert alert-danger">{{ form.debuff.errors }}</div>
+                                    {% endif %}
+                                    <div id="debuffDetails" class="mt-2"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header bg-info">
+                                        <h5 class="mb-0 text-white">Potency Level</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="range-slider">
+                                            {{ form.potency }}
+                                            <span id="potencyDisplay"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger mt-3">
+                                {% for error in form.non_field_errors %}
+                                    <p class="mb-0">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="btn-group w-100 mt-3">
+                            <button type="submit" class="btn btn-info">
+                                <i class="fas fa-save me-1"></i>
+                                {% if object %}Update{% else %}Create{% endif %} Efficacy
+                            </button>
+                            <a href="{% url 'catspedia:efficacy-list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    // Form validation
+    (function () {
+        'use strict'
+        var forms = document.querySelectorAll('.needs-validation')
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+
+    // Handle potency display
+    const potencyInput = document.querySelector('input[name="potency"]')
+    const potencyLabel = document.getElementById('potencyDisplay')
+
+    function updatePotencyDisplay() {
+        const value = parseFloat(potencyInput.value)
+        if (value > 1.0) {
+            potencyLabel.textContent = 'Strong'
+            potencyLabel.className = 'text-success'
+        } else if (value < 1.0) {
+            potencyLabel.textContent = 'Weak'
+            potencyLabel.className = 'text-danger'
+        } else {
+            potencyLabel.textContent = 'Normal'
+            potencyLabel.className = 'text-muted'
+        }
+    }
+
+    potencyInput.addEventListener('input', updatePotencyDisplay)
+    updatePotencyDisplay()
+
+    // Style the select elements
+    const buffSelect = document.querySelector('select[name="buff"]')
+    const debuffSelect = document.querySelector('select[name="debuff"]')
+    buffSelect.classList.add('form-select')
+    debuffSelect.classList.add('form-select')
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    input[type="range"] {
+        width: 100%;
+    }
+    
+    #potencyDisplay {
+        color: var(--primary-color);
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+{% endblock %}

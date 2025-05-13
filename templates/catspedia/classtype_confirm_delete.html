@@ -1,0 +1,133 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}Delete {{ object.name }} Class - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="display-1 text-primary mb-3">
+                            <i class="fas fa-paw"></i>
+                        </div>
+                        <h3>{{ object.name }}</h3>
+                        <p class="text-muted">Class Type</p>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h4 class="alert-heading">
+                            <i class="fas fa-exclamation-circle me-2"></i>Warning
+                        </h4>
+                        <p>You are about to delete this class type. This action cannot be undone.</p>
+                        
+                        {% if object.cats.exists %}
+                            <hr>
+                            <p class="mb-0">
+                                <strong>Associated Cats:</strong><br>
+                                This class type is currently assigned to {{ object.cats.count }} cat{{ object.cats.count|pluralize }}.
+                                These cats will be affected:
+                            </p>
+                            <ul class="mt-2 mb-0">
+                                {% for cat in object.cats.all %}
+                                    <li>{{ cat.name }} (Level {{ cat.evolution_level }})</li>
+                                {% endfor %}
+                            </ul>
+                            <hr>
+                            <div class="alert alert-danger mb-0">
+                                <strong>Critical Warning:</strong> Deleting this class type will make associated cats invalid!
+                            </div>
+                        {% endif %}
+
+                        <hr>
+                        <p class="mb-0">
+                            <strong>Game Balance Impact:</strong><br>
+                            Removing a class type will affect game diversity and balance.
+                            Make sure this change aligns with your game design goals.
+                        </p>
+                    </div>
+
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmCheck" required>
+                            <label class="form-check-label" for="confirmCheck">
+                                I understand that this action cannot be undone
+                            </label>
+                        </div>
+
+                        {% if object.cats.exists %}
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="catsCheck" required>
+                                <label class="form-check-label" for="catsCheck">
+                                    I understand that {{ object.cats.count }} cat{{ object.cats.count|pluralize }} will be affected
+                                </label>
+                            </div>
+                        {% endif %}
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="balanceCheck" required>
+                            <label class="form-check-label" for="balanceCheck">
+                                I understand this will affect game balance
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="typeNameCheck" required>
+                            <label class="form-check-label" for="typeNameCheck">
+                                Type "{{ object.name }}" to confirm:
+                            </label>
+                            <input type="text" class="form-control mt-2" id="typeNameInput" 
+                                   placeholder="Type the class name here" required>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="submit" class="btn btn-danger" id="deleteBtn" disabled>
+                                <i class="fas fa-trash me-1"></i>Delete Class Type
+                            </button>                            <a href="{% url 'catspedia:classtype-detail' object.pk %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Enable/disable delete button based on all requirements
+    const confirmCheck = document.getElementById('confirmCheck');
+    const catsCheck = document.getElementById('catsCheck');
+    const balanceCheck = document.getElementById('balanceCheck');
+    const typeNameCheck = document.getElementById('typeNameCheck');
+    const typeNameInput = document.getElementById('typeNameInput');
+    const deleteBtn = document.getElementById('deleteBtn');
+    const requiredClassName = '{{ object.name }}';
+
+    function updateDeleteButton() {
+        const nameMatches = typeNameInput.value === requiredClassName;
+        const basicChecks = confirmCheck.checked && balanceCheck.checked && typeNameCheck.checked;
+        const catsCheckValid = !catsCheck || catsCheck.checked;
+
+        deleteBtn.disabled = !(nameMatches && basicChecks && catsCheckValid);
+    }
+
+    // Add event listeners to all inputs
+    [confirmCheck, balanceCheck, typeNameCheck, typeNameInput].forEach(element => {
+        element.addEventListener('input', updateDeleteButton);
+    });
+    if (catsCheck) {
+        catsCheck.addEventListener('change', updateDeleteButton);
+    }
+
+    // Initialize button state
+    updateDeleteButton();
+</script>
+{% endblock %}

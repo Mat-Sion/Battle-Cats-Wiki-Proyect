@@ -1,0 +1,97 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}{{ object.name_color }} - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="card-title mb-0">{{ object.name_color }}</h1>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5>Potency Level</h5>
+                            <span class="badge bg-info fs-6">{{ object.potency }}</span>
+                        </div>
+                        <div class="progress" style="height: 25px;">
+                            <div class="progress-bar bg-info" role="progressbar" 
+                                style="width: {{ object.potency|multiply:100.0 }}%"
+                                aria-valuenow="{{ object.potency|multiply:100.0 }}" 
+                                aria-valuemin="0" 
+                                aria-valuemax="100">
+                                {{ object.potency|multiply:100.0 }}%
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="lead mb-4">{{ object.description_eff }}</p>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="card h-100 border-success">
+                                <div class="card-header bg-success text-white">
+                                    <h3 class="h5 mb-0">
+                                        <i class="fas fa-plus-circle me-2"></i>Buff Details
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <h4>{{ object.buff.name }}</h4>
+                                    <p>{{ object.buff.description_buff }}</p>
+                                    <div class="mb-3">
+                                        <span class="badge bg-success">Attack: {{ object.buff.attack }}</span>
+                                        <span class="badge bg-info">Duration: {{ object.buff.duration }}s</span>
+                                    </div>
+                                    <a href="{% url 'catspedia:buff-detail' object.buff.pk %}" class="btn btn-outline-success">
+                                        View Buff Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 border-danger">
+                                <div class="card-header bg-danger text-white">
+                                    <h3 class="h5 mb-0">
+                                        <i class="fas fa-minus-circle me-2"></i>Debuff Details
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <h4>{{ object.debuff.name }}</h4>
+                                    <p>{{ object.debuff.description }}</p>
+                                    <div class="mb-3">
+                                        <span class="badge bg-danger">Effect: {{ object.debuff.effect }}</span>
+                                        <span class="badge bg-info">Duration: {{ object.debuff.duration }}s</span>
+                                    </div>
+                                    <a href="{% url 'catspedia:debuff-detail' object.debuff.pk %}" class="btn btn-outline-danger">
+                                        View Debuff Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">
+                            <i class="fas fa-clock me-1"></i>Created: {{ object.created_at|date:"F j, Y" }}
+                        </span>
+                    </div>
+
+                    <div class="btn-group w-100">
+                        <a href="{% url 'catspedia:efficacy-update' object.pk %}" class="btn btn-primary">
+                            <i class="fas fa-edit me-1"></i>Edit
+                        </a>
+                        <a href="{% url 'catspedia:efficacy-delete' object.pk %}" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Delete
+                        </a>
+                        <a href="{% url 'catspedia:efficacy-list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

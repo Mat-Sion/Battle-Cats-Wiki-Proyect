@@ -1,0 +1,55 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}Classes - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Cat Classes</h1>
+        </div>
+        <div class="col text-end">
+            <a href="{% url 'catspedia:classtype-create' %}" class="btn btn-primary">Add New Class</a>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for classtype in classtypes %}
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ classtype.name }}</h5>
+                    <p class="card-text">{{ classtype.description|truncatewords:30 }}</p>
+                    
+                    <div class="mb-3">
+                        <span class="badge bg-primary">{{ classtype.cats.count }} Cat{{ classtype.cats.count|pluralize }}</span>
+                        {% with total_buffs=classtype.cats.all|length %}
+                            {% if total_buffs > 0 %}
+                                <span class="badge bg-success">Active Class</span>
+                            {% else %}
+                                <span class="badge bg-secondary">No Cats</span>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+
+                    <div class="btn-group w-100">
+                        <a href="{% url 'catspedia:classtype-detail' classtype.pk %}" class="btn btn-outline-primary">View</a>
+                        <a href="{% url 'catspedia:classtype-update' classtype.pk %}" class="btn btn-outline-secondary">Edit</a>
+                        <a href="{% url 'catspedia:classtype-delete' classtype.pk %}" class="btn btn-outline-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h4 class="alert-heading">No Classes Yet!</h4>
+                <p>Start by adding your first cat class to organize your cats.</p>
+                <hr>
+                <a href="{% url 'catspedia:classtype-create' %}" class="btn btn-primary">Create First Class</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

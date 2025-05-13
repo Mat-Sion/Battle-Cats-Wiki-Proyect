@@ -1,0 +1,124 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}Delete {{ object.name_color }} Efficacy - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="display-1 text-info mb-3">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <h3>{{ object.name_color }}</h3>
+                        <p class="text-muted">
+                            Potency: {{ object.potency|floatformat:1 }}x
+                            {% if object.potency > 1.0 %}
+                                <span class="text-success">(Strong)</span>
+                            {% elif object.potency < 1.0 %}
+                                <span class="text-danger">(Weak)</span>
+                            {% else %}
+                                <span class="text-muted">(Normal)</span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-5">
+                                    <div class="text-success mb-2">
+                                        <i class="fas fa-plus-circle fa-2x"></i>
+                                    </div>
+                                    <h5>{{ object.buff.name }}</h5>
+                                    <small class="text-muted">Buff</small>
+                                </div>
+                                <div class="col-2 d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-arrows-alt-h"></i>
+                                </div>
+                                <div class="col-5">
+                                    <div class="text-danger mb-2">
+                                        <i class="fas fa-minus-circle fa-2x"></i>
+                                    </div>
+                                    <h5>{{ object.debuff.name }}</h5>
+                                    <small class="text-muted">Debuff</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h4 class="alert-heading">
+                            <i class="fas fa-exclamation-circle me-2"></i>Warning
+                        </h4>
+                        <p>You are about to delete this efficacy relationship. This action cannot be undone.</p>
+                        
+                        <hr>
+                        <p class="mb-0">
+                            <strong>Game Balance Impact:</strong><br>
+                            Deleting this efficacy relationship will affect how {{ object.buff.name }} interacts 
+                            with {{ object.debuff.name }}. This may impact game balance and combat mechanics.
+                        </p>
+
+                        {% if object.potency > 1.0 %}
+                            <hr>
+                            <p class="mb-0">
+                                <strong>Strong Relationship:</strong><br>
+                                This is a strong efficacy ({{ object.potency|floatformat:1 }}x). Removing it will 
+                                significantly change the effectiveness of {{ object.buff.name }} against 
+                                {{ object.debuff.name }}.
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmCheck" required>
+                            <label class="form-check-label" for="confirmCheck">
+                                I understand that this action cannot be undone
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="balanceCheck" required>
+                            <label class="form-check-label" for="balanceCheck">
+                                I understand this will affect game balance
+                            </label>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="submit" class="btn btn-danger" id="deleteBtn" disabled>
+                                <i class="fas fa-trash me-1"></i>Delete Efficacy
+                            </button>                            <a href="{% url 'catspedia:efficacy-detail' object.pk %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Enable/disable delete button based on checkboxes
+    const confirmCheck = document.getElementById('confirmCheck');
+    const balanceCheck = document.getElementById('balanceCheck');
+    const deleteBtn = document.getElementById('deleteBtn');
+
+    function updateDeleteButton() {
+        deleteBtn.disabled = !(confirmCheck.checked && balanceCheck.checked);
+    }
+
+    confirmCheck.addEventListener('change', updateDeleteButton);
+    balanceCheck.addEventListener('change', updateDeleteButton);
+</script>
+{% endblock %}

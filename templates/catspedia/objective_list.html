@@ -1,0 +1,36 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}Objectives - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Objectives</h1>
+        <a href="{% url 'catspedia:objective-create' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Add New Objective
+        </a>
+    </div>
+
+    <div class="row">
+        {% for objective in objectives %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-{{ objective.difficulty|lower }}">
+                    <h5 class="card-title">{{ objective.title }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ objective.description }}</p>
+                    <a href="{% url 'catspedia:objective-detail' objective.pk %}" class="btn btn-outline-primary">View Details</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No objectives available. <a href="{% url 'catspedia:objective-create' %}" class="alert-link">Create one</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

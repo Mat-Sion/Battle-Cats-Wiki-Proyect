@@ -1,0 +1,129 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}
+    {% if form.instance.pk %}
+        Edit {{ form.instance.name }}
+    {% else %}
+        New Objective
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        {% if form.instance.pk %}
+                            Edit Objective
+                        {% else %}
+                            New Objective
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.name.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.description.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.difficulty.id_for_label }}" class="form-label">Difficulty</label>
+                                {{ form.difficulty }}
+                                {% if form.difficulty.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.difficulty.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.energy_cost.id_for_label }}" class="form-label">Energy Cost</label>
+                                {{ form.energy_cost }}
+                                {% if form.energy_cost.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.energy_cost.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.rewards.id_for_label }}" class="form-label">Rewards (JSON)</label>
+                            {{ form.rewards }}
+                            {% if form.rewards.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.rewards.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">
+                                Example: {"xp": 1000, "items": ["potion", "gold"]}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.required_level.id_for_label }}" class="form-label">Required Level</label>
+                                {{ form.required_level }}
+                                {% if form.required_level.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.required_level.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.enemy_types.id_for_label }}" class="form-label">Enemy Types (JSON)</label>
+                                {{ form.enemy_types }}
+                                {% if form.enemy_types.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.enemy_types.errors|join:", " }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    Example: ["Red", "Floating", "Angel"]
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="btn-group w-100">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Save
+                            </button>
+                            <a href="{% url 'catspedia:objective-list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

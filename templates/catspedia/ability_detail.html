@@ -1,0 +1,125 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}{{ object.name }} - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-{{ object.ability_type|lower }} text-white">
+                    <h2 class="mb-0">{{ object.name }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5>Description</h5>
+                        <p class="lead">{{ object.description }}</p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h5>Ability Properties</h5>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <i class="fas fa-star me-2"></i>Type: 
+                                            <span class="badge bg-{{ object.ability_type|lower }}">
+                                                {{ object.get_ability_type_display }}
+                                            </span>
+                                        </li>
+                                        {% if object.energy_cost > 0 %}
+                                        <li class="mb-2">
+                                            <i class="fas fa-bolt me-2"></i>Energy Cost: 
+                                            <span class="badge bg-warning">{{ object.energy_cost }}</span>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+
+                                    <h6 class="mt-4">Target Traits:</h6>
+                                    {% for trait in object.target_traits %}
+                                        <span class="badge bg-danger me-2">{{ trait }}</span>
+                                    {% empty %}
+                                        <p class="text-muted mb-0">No specific target traits</p>
+                                    {% endfor %}
+
+                                    <h6 class="mt-4">Requirements:</h6>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <pre class="mb-0">{{ object.requirements|pprint }}</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light h-100">
+                                <div class="card-body">
+                                    <h5>Effects</h5>
+                                    <div class="list-group list-group-flush">
+                                        {% for effect in object.effects.all %}
+                                            <a href="{% url 'catspedia:effect-detail' effect.pk %}" class="list-group-item list-group-item-action">
+                                                <div class="d-flex w-100 justify-content-between">
+                                                    <h6 class="mb-1">{{ effect.name }}</h6>
+                                                    <span class="badge bg-{{ effect.effect_type|lower }}">
+                                                        {{ effect.get_effect_type_display }}
+                                                    </span>
+                                                </div>
+                                                <p class="mb-1">{{ effect.description|truncatewords:20 }}</p>
+                                                <small>
+                                                    Power: {{ effect.base_power }}x |
+                                                    Duration: {{ effect.duration }}f |
+                                                    Chance: {{ effect.proc_chance }}%
+                                                </small>
+                                            </a>
+                                        {% empty %}
+                                            <p class="text-muted mb-0">No effects attached to this ability</p>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Cats with this Ability</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% for cat in object.cats.all %}
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ cat.name }}</h6>
+                                                <p class="card-text text-muted">Level {{ cat.evolution_level }}</p>
+                                                <a href="{% url 'evolutioncat-detail' cat.pk %}" class="btn btn-sm btn-outline-primary">View Cat</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <div class="col-12">
+                                        <p class="text-muted mb-0">No cats have this ability yet</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group w-100">
+                        <a href="{% url 'catspedia:ability-update' object.pk %}" class="btn btn-primary">
+                            <i class="fas fa-edit me-1"></i>Edit
+                        </a>
+                        <a href="{% url 'catspedia:ability-delete' object.pk %}" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Delete
+                        </a>
+                        <a href="{% url 'catspedia:ability-list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

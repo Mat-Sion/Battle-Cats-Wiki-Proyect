@@ -1,0 +1,80 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}Debuffs - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4 align-items-center">
+        <div class="col">
+            <h1>Debuffs</h1>
+        </div>
+        <div class="col text-end">
+            <a href="{% url 'catspedia:debuff-create' %}" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Add New Debuff
+            </a>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for debuff in debuffs %}
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="card-title mb-0">{{ debuff.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ debuff.description|truncatewords:30 }}</p>
+                    
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-danger">
+                                <i class="fas fa-bolt me-1"></i>Effect: {{ debuff.effect }}
+                            </span>
+                            <span class="badge bg-info">
+                                <i class="fas fa-clock me-1"></i>{{ debuff.duration }}s
+                            </span>
+                        </div>
+                    </div>
+
+                    {% with efficacy_count=debuff.efficacies.count %}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-balance-scale me-1"></i>{{ efficacy_count }} Efficac{{ efficacy_count|pluralize:"y,ies" }}
+                            </small>
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i>{{ debuff.created_at|date:"F j, Y" }}
+                            </small>
+                        </div>
+                    </div>
+                    {% endwith %}
+
+                    <div class="btn-group w-100">
+                        <a href="{% url 'catspedia:debuff-detail' debuff.pk %}" class="btn btn-outline-primary">
+                            <i class="fas fa-eye me-1"></i>View
+                        </a>
+                        <a href="{% url 'catspedia:debuff-update' debuff.pk %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-edit me-1"></i>Edit
+                        </a>
+                        <a href="{% url 'catspedia:debuff-delete' debuff.pk %}" class="btn btn-outline-danger">
+                            <i class="fas fa-trash me-1"></i>Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h4 class="alert-heading"><i class="fas fa-info-circle me-2"></i>No Debuffs Yet!</h4>
+                <p>Start by adding your first debuff to define negative effects in your game.</p>
+                <hr>
+                <a href="{% url 'catspedia:debuff-create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Create First Debuff
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

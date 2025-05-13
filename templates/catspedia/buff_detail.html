@@ -1,0 +1,134 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}{{ object.name }} - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h2 class="mb-0"><i class="fas fa-plus-circle me-2"></i>{{ object.name }}</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Effect Type and Target Badge -->
+                    <div class="mb-4">
+                        <span class="badge bg-primary me-2 fs-5">{{ object.get_effect_type_display }}</span>
+                        {% if object.target_trait != 'ALL' %}
+                            <span class="badge bg-info fs-5">vs {{ object.get_target_trait_display }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary fs-5">All Enemies</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <h5>Description</h5>
+                        <p class="lead">{{ object.description_buff }}</p>
+                    </div>
+
+                    <!-- Effect Stats -->
+                    <div class="card mb-4 border-success">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Effect Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-fist-raised text-danger me-2"></i>
+                                        <div>
+                                            <h6 class="mb-0">Attack Multiplier</h6>
+                                            <p class="mb-0">{{ object.attack_multiplier }}x damage</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-clock text-info me-2"></i>
+                                        <div>
+                                            <h6 class="mb-0">Duration</h6>
+                                            <p class="mb-0">{{ object.duration }} frames ({{ object.duration|divisibleby:30 }} seconds)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-percentage text-warning me-2"></i>
+                                        <div>
+                                            <h6 class="mb-0">Proc Chance</h6>
+                                            <p class="mb-0">{{ object.proc_chance }}%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cats with this Buff -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Cats with {{ object.name }}</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            {% for cat in object.cats.all %}
+                            <a href="{% url 'evolutioncat-detail' cat.pk %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">{{ cat.name }}</h6>
+                                        <small class="text-muted">{{ cat.class_type.name }} - {{ cat.get_evolution_level_display }}</small>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">{{ cat.base_attack }}</span>
+                                </div>
+                            </a>
+                            {% empty %}
+                            <div class="list-group-item text-center text-muted">
+                                No cats have this buff yet
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Related Efficacies -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Efficacies</h5>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            {% for efficacy in object.efficacies.all %}
+                            <a href="{% url 'efficacy-detail' efficacy.pk %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">{{ efficacy.name_color }}</h6>
+                                        <small class="text-muted">{{ efficacy.description_eff }}</small>
+                                    </div>
+                                    <span class="badge {% if efficacy.is_effective %}bg-success{% elif efficacy.is_weak %}bg-danger{% else %}bg-secondary{% endif %}">
+                                        {{ efficacy.trait_multiplier }}x
+                                    </span>
+                                </div>
+                            </a>
+                            {% empty %}
+                            <div class="list-group-item text-center text-muted">
+                                No efficacies defined for this buff
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="btn-group w-100">
+                        <a href="{% url 'catspedia:buff-update' object.pk %}" class="btn btn-primary">
+                            <i class="fas fa-edit me-1"></i>Edit
+                        </a>
+                        <a href="{% url 'catspedia:buff-delete' object.pk %}" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Delete
+                        </a>
+                        <a href="{% url 'catspedia:buff-list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

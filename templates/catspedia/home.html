@@ -1,0 +1,100 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}Welcome to Catspedia - Cat Evolution Game Wiki{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="text-center mb-4">Welcome to Catspedia</h1>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Cats</h5>
+                    <p class="card-text display-4">{{ cat_count }}</p>                    <p class="card-text display-4">{{ cat_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Objectives</h5>
+                    <p class="card-text display-4">{{ objective_count }}</p>
+                    <a href="{% url 'catspedia:objective-list' %}" class="btn btn-light">View All</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Effects</h5>
+                    <p class="card-text display-4">{{ effect_count }}</p>
+                    <a href="{% url 'catspedia:effect-list' %}" class="btn btn-light">View All</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Abilities</h5>
+                    <p class="card-text display-4">{{ ability_count }}</p>
+                    <a href="{% url 'catspedia:ability-list' %}" class="btn btn-light">View All</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Quick Actions</h4>
+                </div>
+                <div class="card-body">
+                    <div class="btn-group" role="group">                        <a href="{% url 'catspedia:objective-create' %}" class="btn btn-success">Add Objective</a>
+                        <a href="{% url 'catspedia:effect-create' %}" class="btn btn-info">Add Effect</a>
+                        <a href="{% url 'catspedia:ability-create' %}" class="btn btn-warning">Add Ability</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Items -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Recently Added Cats</h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for cat in recent_cats %}                            <p class="text-muted">No cats added yet</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Recent Abilities</h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for ability in recent_abilities %}
+                            <a href="{% url 'catspedia:ability-detail' ability.pk %}" class="list-group-item list-group-item-action">
+                                {{ ability.name }} ({{ ability.get_ability_type_display }})
+                            </a>
+                        {% empty %}
+                            <p class="text-muted">No abilities added yet</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

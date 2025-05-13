@@ -1,0 +1,40 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}Buffs - Catspedia{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>Buffs</h1>
+    </div>
+    <div class="col text-end">
+        <a href="{% url 'catspedia:buff-create' %}" class="btn btn-primary">Add New Buff</a>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for buff in buffs %}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ buff.name }}</h5>
+                <p class="card-text">{{ buff.description_buff|truncatewords:30 }}</p>
+                <div class="mb-2">
+                    <span class="badge bg-success">Attack: {{ buff.attack }}</span>
+                    <span class="badge bg-info">Duration: {{ buff.duration }}s</span>
+                </div>
+                <div class="btn-group">
+                    <a href="{% url 'catspedia:buff-detail' buff.pk %}" class="btn btn-outline-primary">View</a>
+                    <a href="{% url 'catspedia:buff-update' buff.pk %}" class="btn btn-outline-secondary">Edit</a>
+                    <a href="{% url 'catspedia:buff-delete' buff.pk %}" class="btn btn-outline-danger">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No buffs have been added yet.</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

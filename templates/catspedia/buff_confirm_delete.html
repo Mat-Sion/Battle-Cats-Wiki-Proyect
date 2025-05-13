@@ -1,0 +1,92 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}Delete {{ object.name }} - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Confirm Deletion
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="display-1 text-success mb-3">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <h3>{{ object.name }}</h3>
+                        <p class="text-muted">
+                            Attack: {{ object.attack }} | Duration: {{ object.duration }}s
+                        </p>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h4 class="alert-heading">
+                            <i class="fas fa-exclamation-circle me-2"></i>Warning
+                        </h4>
+                        <p>You are about to delete this buff. This action cannot be undone.</p>
+                        
+                        {% if object.cats.exists %}
+                            <hr>
+                            <p class="mb-0">
+                                <strong>Associated Cats:</strong><br>
+                                This buff is currently assigned to {{ object.cats.count }} cat{{ object.cats.count|pluralize }}.
+                                Deleting this buff will remove it from these cats:
+                            </p>
+                            <ul class="mt-2 mb-0">
+                                {% for cat in object.cats.all %}
+                                    <li>{{ cat.name }} (Level {{ cat.evolution_level }})</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        {% if object.efficacies.exists %}
+                            <hr>
+                            <p class="mb-0">
+                                <strong>Efficacy Relationships:</strong><br>
+                                This buff has {{ object.efficacies.count }} efficacy relationship{{ object.efficacies.count|pluralize }}.
+                                These relationships will also be deleted:
+                            </p>
+                            <ul class="mt-2 mb-0">
+                                {% for efficacy in object.efficacies.all %}
+                                    <li>{{ efficacy.name_color }} (vs {{ efficacy.debuff.name }})</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmCheck" required>
+                            <label class="form-check-label" for="confirmCheck">
+                                I understand that this action cannot be undone
+                            </label>
+                        </div>
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="submit" class="btn btn-danger" id="deleteBtn" disabled>
+                                <i class="fas fa-trash me-1"></i>Delete Buff
+                            </button>                            <a href="{% url 'catspedia:buff-detail' object.pk %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Enable/disable delete button based on checkbox
+    const confirmCheck = document.getElementById('confirmCheck');
+    const deleteBtn = document.getElementById('deleteBtn');
+
+    confirmCheck.addEventListener('change', function() {
+        deleteBtn.disabled = !this.checked;
+    });
+</script>
+{% endblock %}

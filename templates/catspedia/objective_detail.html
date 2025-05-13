@@ -1,0 +1,67 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}{{ object.name }} - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-{{ object.difficulty|lower }} text-white">
+                    <h2 class="mb-0">{{ object.name }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5>Description</h5>
+                        <p class="lead">{{ object.description }}</p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Requirements</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-star me-2"></i>Level: {{ object.required_level }}</li>
+                                <li><i class="fas fa-bolt me-2"></i>Energy Cost: {{ object.energy_cost }}</li>
+                                <li><i class="fas fa-trophy me-2"></i>Difficulty: {{ object.get_difficulty_display }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Rewards</h5>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <pre class="mb-0">{{ object.rewards|pprint }}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Enemy Types</h5>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                {% for enemy in object.enemy_types %}
+                                    <span class="badge bg-danger me-2">{{ enemy }}</span>
+                                {% empty %}
+                                    <p class="text-muted mb-0">No enemy types specified</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group w-100">
+                        <a href="{% url 'catspedia:objective-update' object.pk %}" class="btn btn-primary">
+                            <i class="fas fa-edit me-1"></i>Edit
+                        </a>
+                        <a href="{% url 'catspedia:objective-delete' object.pk %}" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i>Delete
+                        </a>
+                        <a href="{% url 'catspedia:objective-list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

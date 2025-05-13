@@ -1,0 +1,56 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}{{ object.name }} Class - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title mb-4">{{ object.name }} Class</h1>
+                    <p class="lead mb-4">{{ object.description }}</p>
+
+                    <h3>Cats of this Class</h3>
+                    <div class="row row-cols-1 row-cols-md-2 g-4 mb-4">
+                        {% for cat in object.cats.all %}
+                        <div class="col">
+                            <div class="card h-100">
+                                {% if cat.image %}
+                                    <img src="{{ cat.image.url }}" class="card-img-top" alt="{{ cat.name }}" style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ cat.name }}</h5>
+                                    <p class="card-text">{{ cat.description|truncatewords:30 }}</p>
+                                    <div class="mb-2">
+                                        <span class="badge bg-primary">Level {{ cat.evolution_level }}</span>
+                                        {% if cat.buffs.exists %}
+                                            <span class="badge bg-success">{{ cat.buffs.count }} Buff{{ cat.buffs.count|pluralize }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <a href="{% url 'evolutioncat-detail' cat.pk %}" class="btn btn-outline-primary">View Details</a>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    Updated: {{ cat.updated_at|date:"F j, Y" }}
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="col-12">
+                            <div class="alert alert-info">No cats of this class type yet.</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="btn-group">
+                        <a href="{% url 'catspedia:classtype-update' object.pk %}" class="btn btn-primary">Edit</a>
+                        <a href="{% url 'catspedia:classtype-delete' object.pk %}" class="btn btn-danger">Delete</a>
+                        <a href="{% url 'catspedia:classtype-list' %}" class="btn btn-secondary">Back to List</a>
+                        <a href="{% url 'evolutioncat-create' %}" class="btn btn-success">Add New Cat</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

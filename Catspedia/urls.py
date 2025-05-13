@@ -2,6 +2,11 @@ from django.urls import path
 from .views import (
     HomeView,
     SearchView,
+    CatListView,
+    CatDetailView,
+    CatCreateView,
+    CatUpdateView,
+    CatDeleteView,
     ObjectiveListView,
     ObjectiveDetailView,
     ObjectiveCreateView,
@@ -24,6 +29,13 @@ app_name = "catspedia"
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("search/", SearchView.as_view(), name="search"),
+    
+    # Cat URLs
+    path("cats/", CatListView.as_view(), name="cat-list"),
+    path("cat/<int:pk>/", CatDetailView.as_view(), name="cat-detail"),
+    path("cat/new/", CatCreateView.as_view(), name="cat-create"),
+    path("cat/<int:pk>/edit/", CatUpdateView.as_view(), name="cat-update"),
+    path("cat/<int:pk>/delete/", CatDeleteView.as_view(), name="cat-delete"),
     
     # Objective URLs
     path("objectives/", ObjectiveListView.as_view(), name="objective-list"),

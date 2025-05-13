@@ -1,6 +1,6 @@
 ﻿from django import forms
 from django.core.exceptions import ValidationError
-from .models import Objective, Effect, Ability
+from .models import Cat, Objective, Effect, Ability
 
 class ObjectiveForm(forms.ModelForm):
     class Meta:
@@ -60,7 +60,7 @@ class AbilityForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-control"}),
             "description": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
-            "effects": forms.SelectMultiple(attrs={"class": "form-select"}),
+            "effects": forms.SelectMultiple(attrs={"class": "form-select", "required": False}),
             "ability_type": forms.Select(attrs={"class": "form-select"}),
             "target_traits": forms.Textarea(attrs={
                 "class": "form-control",
@@ -73,4 +73,26 @@ class AbilityForm(forms.ModelForm):
                 "placeholder": '''{"level": 5, "items": ["special_orb"]}'''
             }),
             "energy_cost": forms.NumberInput(attrs={"class": "form-control", "min": "0"})
+        }
+        
+class CatForm(forms.ModelForm):
+    class Meta:
+        model = Cat
+        fields = [
+            "name", "description", "rarity", "image", "base_health",
+            "base_attack", "abilities", "attack_range", "attack_speed",
+            "movement_speed", "cost"
+        ]
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 4}),
+            "rarity": forms.Select(attrs={"class": "form-select"}),
+            "image": forms.ClearableFileInput(attrs={"class": "form-control"}),
+            "base_health": forms.NumberInput(attrs={"class": "form-control", "min": "1"}),
+            "base_attack": forms.NumberInput(attrs={"class": "form-control", "min": "1"}),
+            "abilities": forms.SelectMultiple(attrs={"class": "form-select"}),
+            "attack_range": forms.NumberInput(attrs={"class": "form-control", "min": "1"}),
+            "attack_speed": forms.NumberInput(attrs={"class": "form-control", "min": "0.1", "step": "0.1"}),
+            "movement_speed": forms.NumberInput(attrs={"class": "form-control", "min": "1"}),
+            "cost": forms.NumberInput(attrs={"class": "form-control", "min": "0"})
         }

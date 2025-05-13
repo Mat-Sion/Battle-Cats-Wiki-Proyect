@@ -1,17 +1,20 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from django.urls import reverse_lazy
 from django.db.models import Q
-from .models import Objective, Effect, Ability
-from .forms import ObjectiveForm, EffectForm, AbilityForm
+from .models import Cat, Objective, Effect, Ability
+from .forms import CatForm, ObjectiveForm, EffectForm, AbilityForm
 
 class HomeView(TemplateView):
     template_name = "catspedia/home.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["objectives"] = Objective.objects.all()[:5]
-        context["effects"] = Effect.objects.all()[:5]
-        context["abilities"] = Ability.objects.all()[:5]
+        context["cat_count"] = Cat.objects.count()
+        context["objective_count"] = Objective.objects.count()
+        context["effect_count"] = Effect.objects.count()
+        context["ability_count"] = Ability.objects.count()
+        context["recent_cats"] = Cat.objects.order_by('-created_at')[:5]
+        context["recent_abilities"] = Ability.objects.order_by('-created_at')[:5]
         return context
 
 class SearchView(TemplateView):
@@ -21,6 +24,9 @@ class SearchView(TemplateView):
         context = super().get_context_data(**kwargs)
         query = self.request.GET.get("q", "")
         if query:
+            cat_results = Cat.objects.filter(
+                Q(name__icontains=query) | Q(description__icontains=query)
+            )
             objective_results = Objective.objects.filter(
                 Q(name__icontains=query) | Q(description__icontains=query)
             )
@@ -32,6 +38,7 @@ class SearchView(TemplateView):
             )
             context.update({
                 "query": query,
+                "cat_results": cat_results,
                 "objective_results": objective_results,
                 "effect_results": effect_results,
                 "ability_results": ability_results
@@ -112,9 +119,36 @@ class AbilityUpdateView(UpdateView):
     model = Ability
     form_class = AbilityForm
     template_name = "catspedia/ability_form.html"
-
+    
 class AbilityDeleteView(DeleteView):
     model = Ability
     context_object_name = "ability"
     template_name = "catspedia/ability_confirm_delete.html"
     success_url = reverse_lazy("catspedia:ability-list")
+
+# Cat views
+class CatListView(ListView):
+    model = Cat
+    context_object_name = "cats"
+    template_name = "catspedia/cat_list.html"
+
+class CatDetailView(DetailView):
+    model = Cat
+    context_object_name = "cat"
+    template_name = "catspedia/cat_detail.html"
+
+class CatCreateView(CreateView):
+    model = Cat
+    form_class = CatForm
+    template_name = "catspedia/cat_form.html"
+
+class CatUpdateView(UpdateView):
+    model = Cat
+    form_class = CatForm
+    template_name = "catspedia/cat_form.html"
+
+class CatDeleteView(DeleteView):
+    model = Cat
+    context_object_name = "cat"
+    template_name = "catspedia/cat_confirm_delete.html"
+    success_url = reverse_lazy("catspedia:cat-list")

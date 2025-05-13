@@ -8,11 +8,11 @@
     
     <!-- Statistics Cards -->
     <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary">
+        <div class="col-md-3">            <div class="card text-white bg-primary">
                 <div class="card-body">
                     <h5 class="card-title">Total Cats</h5>
-                    <p class="card-text display-4">{{ cat_count }}</p>                    <p class="card-text display-4">{{ cat_count }}</p>
+                    <p class="card-text display-4">{{ cat_count }}</p>
+                    <a href="{% url 'catspedia:cat-list' %}" class="btn btn-light">View All</a>
                 </div>
             </div>
         </div>
@@ -47,13 +47,14 @@
 
     <!-- Quick Actions -->
     <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
+        <div class="col-12">            <div class="card">
                 <div class="card-header">
                     <h4>Quick Actions</h4>
                 </div>
                 <div class="card-body">
-                    <div class="btn-group" role="group">                        <a href="{% url 'catspedia:objective-create' %}" class="btn btn-success">Add Objective</a>
+                    <div class="btn-group" role="group">
+                        <a href="{% url 'catspedia:cat-create' %}" class="btn btn-primary">Add Cat</a>
+                        <a href="{% url 'catspedia:objective-create' %}" class="btn btn-success">Add Objective</a>
                         <a href="{% url 'catspedia:effect-create' %}" class="btn btn-info">Add Effect</a>
                         <a href="{% url 'catspedia:ability-create' %}" class="btn btn-warning">Add Ability</a>
                     </div>
@@ -65,13 +66,17 @@
     <!-- Recent Items -->
     <div class="row">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
+            <div class="card">                <div class="card-header">
                     <h4>Recently Added Cats</h4>
                 </div>
                 <div class="card-body">
                     <div class="list-group">
-                        {% for cat in recent_cats %}                            <p class="text-muted">No cats added yet</p>
+                        {% for cat in recent_cats %}
+                            <a href="{% url 'catspedia:cat-detail' cat.pk %}" class="list-group-item list-group-item-action">
+                                {{ cat.name }} ({{ cat.get_rarity_display }})
+                            </a>
+                        {% empty %}
+                            <p class="text-muted">No cats added yet</p>
                         {% endfor %}
                     </div>
                 </div>

@@ -1,0 +1,44 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}All Cats - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>All Cats</h1>
+        <a href="{% url 'catspedia:cat-create' %}" class="btn btn-primary">Add New Cat</a>
+    </div>
+    
+    {% if cats %}
+        <div class="row">
+            {% for cat in cats %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if cat.image %}
+                            <img src="{{ cat.image.url }}" class="card-img-top" alt="{{ cat.name }}">
+                        {% else %}
+                            <div class="card-img-top bg-light text-center py-5">No Image</div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ cat.name }}</h5>
+                            <p class="card-text">
+                                <span class="badge {% if cat.rarity == 'NORMAL' %}bg-secondary{% elif cat.rarity == 'SPECIAL' %}bg-primary{% elif cat.rarity == 'RARE' %}bg-info{% elif cat.rarity == 'SUPER_RARE' %}bg-warning{% elif cat.rarity == 'UBER_RARE' %}bg-danger{% else %}bg-dark{% endif %}">
+                                    {{ cat.get_rarity_display }}
+                                </span>
+                            </p>
+                            <p class="card-text text-truncate">{{ cat.description }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{% url 'catspedia:cat-detail' cat.pk %}" class="btn btn-sm btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No cats have been added yet. <a href="{% url 'catspedia:cat-create' %}" class="alert-link">Add your first cat</a>!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends 'catspedia/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if form.instance.pk %}Edit {{ form.instance.name }}{% else %}Add New Cat{% endif %} - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header">
+            <h1>{% if form.instance.pk %}Edit {{ form.instance.name }}{% else %}Add New Cat{% endif %}</h1>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">Cat Name</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.name.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.rarity.id_for_label }}" class="form-label">Rarity</label>
+                            {{ form.rarity }}
+                            {% if form.rarity.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.rarity.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.image.id_for_label }}" class="form-label">Image</label>
+                            {{ form.image }}
+                            {% if form.image.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.image.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="{{ form.base_health.id_for_label }}" class="form-label">Base Health</label>
+                            {{ form.base_health }}
+                            {% if form.base_health.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.base_health.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.base_attack.id_for_label }}" class="form-label">Base Attack</label>
+                            {{ form.base_attack }}
+                            {% if form.base_attack.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.base_attack.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.attack_range.id_for_label }}" class="form-label">Attack Range</label>
+                            {{ form.attack_range }}
+                            {% if form.attack_range.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.attack_range.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.attack_speed.id_for_label }}" class="form-label">Attack Speed</label>
+                            {{ form.attack_speed }}
+                            {% if form.attack_speed.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.attack_speed.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.movement_speed.id_for_label }}" class="form-label">Movement Speed</label>
+                            {{ form.movement_speed }}
+                            {% if form.movement_speed.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.movement_speed.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.cost.id_for_label }}" class="form-label">Cost</label>
+                            {{ form.cost }}
+                            {% if form.cost.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.cost.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.description.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="{{ form.abilities.id_for_label }}" class="form-label">Abilities</label>
+                    {{ form.abilities }}
+                    {% if form.abilities.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.abilities.errors|join:", " }}
+                        </div>
+                    {% endif %}
+                    <div class="form-text">Hold Ctrl/Cmd to select multiple abilities</div>
+                </div>
+                
+                <div class="btn-group w-100">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Save
+                    </button>
+                    <a href="{% url 'catspedia:cat-list' %}" class="btn btn-secondary">
+                        <i class="fas fa-times me-1"></i>Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

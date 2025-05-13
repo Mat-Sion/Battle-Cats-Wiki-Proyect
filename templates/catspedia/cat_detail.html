@@ -1,0 +1,87 @@
+{% extends 'catspedia/base.html' %}
+
+{% block title %}{{ cat.name }} - Catspedia{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h1>{{ cat.name }}</h1>
+            <div>
+                <a href="{% url 'catspedia:cat-update' cat.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a href="{% url 'catspedia:cat-delete' cat.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    {% if cat.image %}
+                        <img src="{{ cat.image.url }}" class="img-fluid rounded" alt="{{ cat.name }}">
+                    {% else %}
+                        <div class="bg-light text-center py-5 rounded">No Image Available</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <h5>
+                        <span class="badge {% if cat.rarity == 'NORMAL' %}bg-secondary{% elif cat.rarity == 'SPECIAL' %}bg-primary{% elif cat.rarity == 'RARE' %}bg-info{% elif cat.rarity == 'SUPER_RARE' %}bg-warning{% elif cat.rarity == 'UBER_RARE' %}bg-danger{% else %}bg-dark{% endif %}">
+                            {{ cat.get_rarity_display }}
+                        </span>
+                    </h5>
+                    
+                    <p>{{ cat.description }}</p>
+                    
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Health</th>
+                                <td>{{ cat.base_health }}</td>
+                            </tr>
+                            <tr>
+                                <th>Attack</th>
+                                <td>{{ cat.base_attack }}</td>
+                            </tr>
+                            <tr>
+                                <th>Attack Range</th>
+                                <td>{{ cat.attack_range }}</td>
+                            </tr>
+                            <tr>
+                                <th>Attack Speed</th>
+                                <td>{{ cat.attack_speed }}</td>
+                            </tr>
+                            <tr>
+                                <th>Movement Speed</th>
+                                <td>{{ cat.movement_speed }}</td>
+                            </tr>
+                            <tr>
+                                <th>Cost</th>
+                                <td>{{ cat.cost }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <h3 class="mt-4">Abilities</h3>
+            {% if cat.abilities.all %}
+                <div class="list-group">
+                    {% for ability in cat.abilities.all %}
+                        <a href="{% url 'catspedia:ability-detail' ability.pk %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5>{{ ability.name }}</h5>
+                                    <p class="mb-1">{{ ability.description|truncatechars:100 }}</p>
+                                </div>
+                                <span class="badge {% if ability.ability_type == 'PASSIVE' %}bg-secondary{% elif ability.ability_type == 'ACTIVE' %}bg-primary{% elif ability.ability_type == 'CONDITIONAL' %}bg-info{% else %}bg-warning{% endif %}">
+                                    {{ ability.get_ability_type_display }}
+                                </span>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">This cat has no abilities.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
